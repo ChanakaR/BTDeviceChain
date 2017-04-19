@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.wbn.uom.btdevicechain.R;
 
-
 public class HomeScreenFragment extends Fragment {
 
     @Override
@@ -19,6 +18,5 @@ public class HomeScreenFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home_screen, container, false);
     }
-
 
 }
