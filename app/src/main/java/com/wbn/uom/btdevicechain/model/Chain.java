@@ -1,5 +1,7 @@
 package com.wbn.uom.btdevicechain.model;
 
+import java.util.List;
+
 /**
  * Created by chanaka on 4/16/17.
  */
@@ -7,6 +9,11 @@ package com.wbn.uom.btdevicechain.model;
 public class Chain {
     private String name;
     private String state;
+    private List<Device> deviceList;
+
+    public Chain(String name){
+        this.name = name;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -22,5 +29,9 @@ public class Chain {
 
     public String getState() {
         return state;
+    }
+
+    public int getDeviceCount(){
+        return 3;
     }
 }

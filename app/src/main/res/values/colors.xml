@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#004D40</color>
     <color name="colorAccent">#FF6F00</color>
     <color name="floatingBtn">#FF6F00</color>
+    <color name="sub_description">#999999</color>
+    <color name="title">#222222</color>
 </resources>
