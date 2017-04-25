@@ -20,6 +20,12 @@ import com.wbn.uom.btdevicechain.model.Chain;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Created by   : Chanaka
+ * Class name   : HomeScreenFragment
+ * Purpose      : Fragment class for the home screen fragment
+ */
+
 public class HomeScreenFragment extends Fragment {
 
     private List<Chain> chainList = new ArrayList<>();

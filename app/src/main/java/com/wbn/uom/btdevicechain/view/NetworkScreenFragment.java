@@ -10,6 +10,11 @@ import android.view.ViewGroup;
 
 import com.wbn.uom.btdevicechain.R;
 
+/*
+ * Created by   : Chanaka
+ * Class name   : NetworkScreenFragment
+ * Purpose      : Fragment class for the network detail view.
+ */
 public class NetworkScreenFragment extends Fragment {
 
 

@@ -12,7 +12,9 @@ import com.wbn.uom.btdevicechain.model.Chain;
 import java.util.List;
 
 /**
- * Created by chanaka on 4/19/17.
+ * Created by   : chanaka on 4/19/17.
+ * Class name   : NetworkListAdapter
+ * Purpose      : Adapter class for network list view in home screen
  */
 
 public class NetworkListAdapter extends RecyclerView.Adapter<NetworkListAdapter.NetworkListViewHolder> {

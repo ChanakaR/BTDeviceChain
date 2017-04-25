@@ -10,7 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
- * Created by chanaka on 4/19/17.
+ * Created by   : chanaka on 4/19/17.
+ * Class name   : RecyclerViewItemDecorator
+ * Purpose      : Class decorate the recycler view items by adding a bottom separator
  */
 
 public class RecyclerViewItemDecorator extends RecyclerView.ItemDecoration {
