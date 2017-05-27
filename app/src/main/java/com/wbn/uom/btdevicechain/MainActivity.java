@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.wbn.uom.btdevicechain.view.DeviceSearchScreenFragment;
 import com.wbn.uom.btdevicechain.view.HomeScreenFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -34,8 +36,10 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Fragment deviceSearchFragment = new DeviceSearchScreenFragment();
+                changeFragment(deviceSearchFragment);
             }
         });
 
@@ -48,16 +52,29 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        changeFragment();
+        //replace home screen by home screen fragment
+        Fragment homeFragment = new HomeScreenFragment();
+        changeFragment(homeFragment);
 
     }
 
+
+    // functionality on back pressed
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        FragmentManager fm = getSupportFragmentManager();
+        int c = fm.getBackStackEntryCount();
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else if (fm.getBackStackEntryCount() > 1) {
+            Log.i("MainActivity", "popping backstack");
+            fm.popBackStack();
+        }
+        else {
+            Log.i("MainActivity", "nothing on backstack, calling super");
             super.onBackPressed();
         }
     }
@@ -114,12 +131,12 @@ public class MainActivity extends AppCompatActivity
         toast.show();
     }
 
-    public void changeFragment(){
-        Fragment fragment = new HomeScreenFragment();
+    public void changeFragment(Fragment fragment){
+
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.content_main, fragment);
-        ft.commit();
+        ft.addToBackStack(null).commit();
     }
 
 }

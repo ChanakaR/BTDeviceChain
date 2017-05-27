@@ -1,7 +1,5 @@
 package com.wbn.uom.btdevicechain.view;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,13 +13,13 @@ import com.wbn.uom.btdevicechain.R;
  * Class name   : NetworkScreenFragment
  * Purpose      : Fragment class for the network detail view.
  */
-public class NetworkScreenFragment extends Fragment {
+public class DeviceSearchScreenFragment extends Fragment {
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_network_screen, container, false);
+        return inflater.inflate(R.layout.fragment_device_search_screen, container, false);
     }
 }

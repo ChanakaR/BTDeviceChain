@@ -1,12 +1,8 @@
 package com.wbn.uom.btdevicechain.view;
 
-import android.content.Context;
-import android.graphics.Movie;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.wbn.uom.btdevicechain.R;
-import com.wbn.uom.btdevicechain.model.Chain;
+import com.wbn.uom.btdevicechain.da.DeviceAccess;
+import com.wbn.uom.btdevicechain.model.Device;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +25,10 @@ import java.util.List;
 
 public class HomeScreenFragment extends Fragment {
 
-    private List<Chain> chainList = new ArrayList<>();
+    private List<Device> deviceList = new ArrayList<>();
     private RecyclerView recyclerView;
-    private NetworkListAdapter networkListAdapter;
+    private DeviceListAdapter deviceListAdapter;
+    private DeviceAccess deviceAccess;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +36,7 @@ public class HomeScreenFragment extends Fragment {
 
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
-        prepareDummyData();
+        deviceAccess = new DeviceAccess();
     }
 
     @Override
@@ -49,21 +47,21 @@ public class HomeScreenFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.network_list_recycler_view);
 
-        networkListAdapter = new NetworkListAdapter(chainList);
+        deviceListAdapter = new DeviceListAdapter(deviceAccess.getDeviceList());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
 
         recyclerView.setLayoutManager(mLayoutManager);
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new RecyclerViewItemDecorator(this.getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(networkListAdapter);
+        recyclerView.setAdapter(deviceListAdapter);
 
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getActivity().getApplicationContext(),
                 recyclerView, new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Chain chain = chainList.get(position);
-                Toast.makeText(getActivity().getApplicationContext(), chain.getName() + " is selected!", Toast.LENGTH_SHORT).show();
+                Device device = deviceAccess.getByPosition(position);
+                Toast.makeText(getActivity().getApplicationContext(), device.getName() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -73,16 +71,9 @@ public class HomeScreenFragment extends Fragment {
         }));
 
 
+
         // Inflate the layout for this fragment
         return view;
     }
 
-    private void prepareDummyData(){
-        Chain chain = new Chain("My Tablet");
-        chainList.add(chain);
-
-        chain = new Chain("My Laptop");
-        chainList.add(chain);
-
-    }
 }
