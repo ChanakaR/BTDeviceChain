@@ -27,7 +27,7 @@ public class HomeScreenFragment extends Fragment {
 
     private List<Device> deviceList = new ArrayList<>();
     private RecyclerView recyclerView;
-    private DeviceListAdapter deviceListAdapter;
+    private DeviceListConnectedAdapter deviceListConnectedAdapter;
     private DeviceAccess deviceAccess;
 
     @Override
@@ -47,14 +47,14 @@ public class HomeScreenFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.network_list_recycler_view);
 
-        deviceListAdapter = new DeviceListAdapter(deviceAccess.getDeviceList());
+        deviceListConnectedAdapter = new DeviceListConnectedAdapter(deviceAccess.getDeviceList());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
 
         recyclerView.setLayoutManager(mLayoutManager);
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new RecyclerViewItemDecorator(this.getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(deviceListAdapter);
+        recyclerView.setAdapter(deviceListConnectedAdapter);
 
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getActivity().getApplicationContext(),
                 recyclerView, new RecyclerViewClickListener() {

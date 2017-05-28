@@ -17,11 +17,11 @@ public class DeviceAccess {
     }
 
     private void prepareDummyData(){
-        Device device = new Device("My Tablet");
+        Device device = new Device("My Tablet","1234","false");
         device.setState("running");
         deviceList.add(device);
 
-        device = new Device("My Laptop");
+        device = new Device("My Laptop","1234","false");
         device.setState("running");
         deviceList.add(device);
     }

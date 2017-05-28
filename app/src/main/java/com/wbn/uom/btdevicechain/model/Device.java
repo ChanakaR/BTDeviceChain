@@ -10,10 +10,19 @@ import java.util.List;
 
 public class Device {
     private String name;
+    private String address;
     private String state;
+    private Boolean connected;
 
-    public Device(String name){
+    public Device(String name,String address, String connected){
         this.name = name;
+        this.address = address;
+        if(connected == "true"){
+            this.connected = true;
+        }
+        else{
+            this.connected = false;
+        }
     }
 
     public void setName(String name) {
@@ -31,6 +40,10 @@ public class Device {
     public String getState() {
         return state;
     }
+
+    public Boolean getConnected() { return connected; }
+
+    public String getAddress(){ return this.address; }
 
     public int getDeviceCount(){
         return 3;
