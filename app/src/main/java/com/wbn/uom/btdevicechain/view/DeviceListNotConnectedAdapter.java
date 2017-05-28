@@ -50,4 +50,12 @@ public class DeviceListNotConnectedAdapter extends RecyclerView.Adapter<DeviceLi
         return this.deviceList.size();
     }
 
+    public void add(Device device){
+        this.deviceList.add(device);
+    }
+
+    public void clear(){
+        this.deviceList.clear();
+    }
+
 }
