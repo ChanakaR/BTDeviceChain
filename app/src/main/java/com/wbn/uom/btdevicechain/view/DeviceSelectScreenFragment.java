@@ -25,8 +25,8 @@ public class DeviceSelectScreenFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_device_select_screen, container, false);
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+        tabLayout.addTab(tabLayout.newTab().setText("Search devices"));
+        tabLayout.addTab(tabLayout.newTab().setText("Paired devices"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);

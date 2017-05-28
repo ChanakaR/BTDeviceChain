@@ -9,6 +9,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:elevation="8dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>

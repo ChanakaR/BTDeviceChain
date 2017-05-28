@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 /**
  * Created by inocer on 5/27/17.
+ * Purpose : pager adapter for tabbed view in device select screen
  */
 
 public class TabPagerAdapter extends FragmentStatePagerAdapter {
@@ -21,11 +22,13 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                PairedDeviceFragment tab1 = new PairedDeviceFragment();
+                SearchDeviceFragment tab1 = new SearchDeviceFragment();
                 return tab1;
+
             case 1:
-                SearchDeviceFragment tab2 = new SearchDeviceFragment();
+                PairedDeviceFragment tab2 = new PairedDeviceFragment();
                 return tab2;
+
             default:
                 return null;
         }
