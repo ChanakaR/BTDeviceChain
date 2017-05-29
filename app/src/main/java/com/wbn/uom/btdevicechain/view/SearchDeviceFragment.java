@@ -32,23 +32,23 @@ import java.util.List;
 public class SearchDeviceFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private DeviceListNotConnectedAdapter deviceListNotConnectedAdapter;
+    private static DeviceListNotConnectedAdapter deviceListNotConnectedAdapter;
     private List<Device> deviceList = new ArrayList<>();
 
-    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                Log.d("DEVICELIST", "Bluetooth device found\n");
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // Create a new device item
-                Device newDevice = new Device(device.getName(), device.getAddress(), "false");
-                // Add it to our adapter
-                deviceListNotConnectedAdapter.add(newDevice);
-                deviceListNotConnectedAdapter.notifyDataSetChanged();
-            }
-        }
-    };
+//    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+//                Log.d("DEVICELIST", "Bluetooth device found\n");
+//                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//                // Create a new device item
+//                Device newDevice = new Device(device.getName(), device.getAddress(), "false");
+//                // Add it to our adapter
+//                deviceListNotConnectedAdapter.add(newDevice);
+//                deviceListNotConnectedAdapter.notifyDataSetChanged();
+//            }
+//        }
+//    };
 
 
     @Override
@@ -60,9 +60,6 @@ public class SearchDeviceFragment extends Fragment {
 
 
         recyclerView = (RecyclerView) view.findViewById(R.id.search_device_list_recycler_view);
-
-        Log.i("DEVICELIST", "Super called for DeviceListFragment onCreate\n");
-        deviceList = new ArrayList<Device>();
 
         deviceListNotConnectedAdapter = new DeviceListNotConnectedAdapter(deviceList);
 
@@ -90,22 +87,28 @@ public class SearchDeviceFragment extends Fragment {
             }
         }));
 
+
         scan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                 if (isChecked) {
                     deviceListNotConnectedAdapter.clear();
-                    getActivity().registerReceiver(bReciever, filter);
-                    ((MainActivity)getActivity()).BTAdapter.startDiscovery();
+                    ((MainActivity)getActivity()).bluetooth.startDeviceDiscovery();
+//                    getActivity().registerReceiver(bReciever, filter);
+//                    ((MainActivity)getActivity()).BTAdapter.startDiscovery();
                 } else {
-                    getActivity().unregisterReceiver(bReciever);
-                    ((MainActivity)getActivity()).BTAdapter.cancelDiscovery();
+                    ((MainActivity)getActivity()).bluetooth.cancelDeviceDiscovery();
+//                    getActivity().unregisterReceiver(bReciever);
+//                    ((MainActivity)getActivity()).BTAdapter.cancelDiscovery();
                 }
             }
         });
 
-
         return view;
 
+    }
+
+    public static void addDeviceToAdapter(Device device){
+        deviceListNotConnectedAdapter.add(device);
+        deviceListNotConnectedAdapter.notifyDataSetChanged();
     }
 }

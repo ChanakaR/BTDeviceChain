@@ -37,19 +37,18 @@ public class PairedDeviceFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.paired_device_list_recycler_view);
 
-        Log.i("DEVICELIST", "Super called for DeviceListFragment onCreate\n");
-        deviceList = new ArrayList<Device>();
-        Set<BluetoothDevice> pairedDevices = ((MainActivity)getActivity()).BTAdapter.getBondedDevices();
+//        Log.i("DEVICELIST", "Super called for DeviceListFragment onCreate\n");
+//        deviceList = new ArrayList<Device>();
+//        Set<BluetoothDevice> pairedDevices = ((MainActivity)getActivity()).BTAdapter.getBondedDevices();
+//
+//        if (pairedDevices.size() > 0) {
+//            for (BluetoothDevice device : pairedDevices) {
+//                Device newDevice= new Device(device.getName(),device.getAddress(),"false");
+//                deviceList.add(newDevice);
+//            }
+//        }
 
-        if (pairedDevices.size() > 0) {
-            Log.i("DEVICELIST","DDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-            for (BluetoothDevice device : pairedDevices) {
-                Device newDevice= new Device(device.getName(),device.getAddress(),"false");
-                Log.i("DEVICE NAME",newDevice.getName());
-                deviceList.add(newDevice);
-            }
-        }
-
+        deviceList = ((MainActivity)getActivity()).bluetooth.getPairedDevices();
 
         deviceListNotConnectedAdapter = new DeviceListNotConnectedAdapter(deviceList);
 
