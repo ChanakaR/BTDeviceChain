@@ -35,21 +35,6 @@ public class SearchDeviceFragment extends Fragment {
     private static DeviceListNotConnectedAdapter deviceListNotConnectedAdapter;
     private List<Device> deviceList = new ArrayList<>();
 
-//    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
-//        public void onReceive(Context context, Intent intent) {
-//            String action = intent.getAction();
-//            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-//                Log.d("DEVICELIST", "Bluetooth device found\n");
-//                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-//                // Create a new device item
-//                Device newDevice = new Device(device.getName(), device.getAddress(), "false");
-//                // Add it to our adapter
-//                deviceListNotConnectedAdapter.add(newDevice);
-//                deviceListNotConnectedAdapter.notifyDataSetChanged();
-//            }
-//        }
-//    };
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,12 +78,8 @@ public class SearchDeviceFragment extends Fragment {
                 if (isChecked) {
                     deviceListNotConnectedAdapter.clear();
                     ((MainActivity)getActivity()).bluetooth.startDeviceDiscovery();
-//                    getActivity().registerReceiver(bReciever, filter);
-//                    ((MainActivity)getActivity()).BTAdapter.startDiscovery();
                 } else {
                     ((MainActivity)getActivity()).bluetooth.cancelDeviceDiscovery();
-//                    getActivity().unregisterReceiver(bReciever);
-//                    ((MainActivity)getActivity()).BTAdapter.cancelDiscovery();
                 }
             }
         });

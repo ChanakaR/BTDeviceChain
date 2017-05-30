@@ -25,26 +25,13 @@ import java.util.Set;
 
 public class Bluetooth {
 
-    private BluetoothAdapter bluetoothAdapter;
     public static int REQUEST_BLUETOOTH = 1;
+    private BluetoothAdapter bluetoothAdapter;
     private Context context;
-
-    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                Log.d("DEVICELIST", "Bluetooth device found\n");
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // Create a new device item
-                Device newDevice = new Device(device.getName(), device.getAddress(), "false");
-                // Add it to our adapter
-
-                SearchDeviceFragment.addDeviceToAdapter(newDevice);
-            }
-        }
-    };
+    private BrdcardReceiver broadcardReciever;
 
     public Bluetooth(Context context){
+        broadcardReciever = new BrdcardReceiver();
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.context = context;
     }
@@ -87,12 +74,12 @@ public class Bluetooth {
 
     public void startDeviceDiscovery(){
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        context.registerReceiver(bReciever, filter);
+        context.registerReceiver(broadcardReciever, filter);
         bluetoothAdapter.startDiscovery();
     }
 
     public void cancelDeviceDiscovery(){
-        context.unregisterReceiver(bReciever);
+        context.unregisterReceiver(broadcardReciever);
         bluetoothAdapter.cancelDiscovery();
     }
 
