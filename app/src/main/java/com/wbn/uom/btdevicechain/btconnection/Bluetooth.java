@@ -3,17 +3,12 @@ package com.wbn.uom.btdevicechain.btconnection;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-
-import com.wbn.uom.btdevicechain.MainActivity;
 import com.wbn.uom.btdevicechain.model.Device;
-import com.wbn.uom.btdevicechain.view.SearchDeviceFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +23,10 @@ public class Bluetooth {
     public static int REQUEST_BLUETOOTH = 1;
     private BluetoothAdapter bluetoothAdapter;
     private Context context;
-    private BrdcardReceiver broadcardReciever;
+    private DiscoveryBroadcastReceiver broadcardReciever;
 
     public Bluetooth(Context context){
-        broadcardReciever = new BrdcardReceiver();
+        broadcardReciever = new DiscoveryBroadcastReceiver();
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.context = context;
     }
@@ -65,7 +60,7 @@ public class Bluetooth {
         Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
-                Device newDevice= new Device(device.getName(),device.getAddress(),"false");
+                Device newDevice= new Device(device);
                 pairedDeviceList.add(newDevice);
             }
         }

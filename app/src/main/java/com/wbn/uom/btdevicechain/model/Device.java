@@ -1,51 +1,56 @@
 package com.wbn.uom.btdevicechain.model;
 
+import android.bluetooth.BluetoothDevice;
+
 import java.util.List;
 
 /**
  * Created by chanaka on 4/16/17.
  * Class name   : Device
- * Purpose      : Class for represent a group of devices. Contain device information
+ * Purpose      : Class for represent a device. Contain device information
  */
 
 public class Device {
-    private String name;
-    private String address;
+
+
+    private String displayName;
     private String state;
-    private Boolean connected;
+    private BluetoothDevice bDevice;
 
-    public Device(String name,String address, String connected){
-        this.name = name;
-        this.address = address;
-        if(connected == "true"){
-            this.connected = true;
-        }
-        else{
-            this.connected = false;
-        }
+    public Device(BluetoothDevice device){
+        this.bDevice = device;
+        this.state = "DISABLED";
+        this.displayName = device.getName();
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setState(String state) {
-        this.state = state;
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getState() {
         return state;
     }
 
-    public Boolean getConnected() { return connected; }
-
-    public String getAddress(){ return this.address; }
-
-    public int getDeviceCount(){
-        return 3;
+    public BluetoothDevice getbDevice() {
+        return bDevice;
     }
+
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setbDevice(BluetoothDevice bDevice) {
+        this.bDevice = bDevice;
+    }
+
+    public String getMacAddress(){
+        return this.bDevice.getAddress();
+    }
+
 }

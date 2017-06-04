@@ -42,7 +42,7 @@ public class DeviceListNotConnectedAdapter extends RecyclerView.Adapter<DeviceLi
     @Override
     public void onBindViewHolder(DeviceListNotConnectedAdapter.DeviceListViewHolder holder, int position) {
         Device device = deviceList.get(position);
-        holder.device_public_name.setText(device.getName());
+        holder.device_public_name.setText(device.getDisplayName());
     }
 
     @Override

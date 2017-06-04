@@ -54,7 +54,7 @@ public class PairedDeviceFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 Device device = deviceList.get(position);
-                Toast.makeText(getActivity().getApplicationContext(), device.getName() + " is selected!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), device.getMacAddress() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override

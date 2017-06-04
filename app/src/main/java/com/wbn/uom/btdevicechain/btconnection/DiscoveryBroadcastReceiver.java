@@ -14,7 +14,7 @@ import com.wbn.uom.btdevicechain.view.SearchDeviceFragment;
  * Created by inocer on 5/29/17.
  */
 
-public class BrdcardReceiver extends BroadcastReceiver{
+public class DiscoveryBroadcastReceiver extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -13,11 +13,11 @@ import java.util.List;
 
 /**
  * Created by   : chanaka on 4/19/17.
- * Class name   : DeviceListConnectedAdapter
+ * Class name   : DeviceListSelectedAdapter
  * Purpose      : Adapter class for network list view in home screen
  */
 
-public class DeviceListConnectedAdapter extends RecyclerView.Adapter<DeviceListConnectedAdapter.DeviceListViewHolder> {
+public class DeviceListSelectedAdapter extends RecyclerView.Adapter<DeviceListSelectedAdapter.DeviceListViewHolder> {
 
     private List<Device> deviceList;
 
@@ -30,7 +30,7 @@ public class DeviceListConnectedAdapter extends RecyclerView.Adapter<DeviceListC
         }
     }
 
-    public DeviceListConnectedAdapter(List<Device> deviceList){
+    public DeviceListSelectedAdapter(List<Device> deviceList){
         this.deviceList = deviceList;
     }
 
@@ -45,7 +45,7 @@ public class DeviceListConnectedAdapter extends RecyclerView.Adapter<DeviceListC
     @Override
     public void onBindViewHolder(DeviceListViewHolder holder, int position) {
         Device device = deviceList.get(position);
-        holder.network_name.setText(device.getName());
+        holder.network_name.setText(device.getDisplayName());
         holder.device_state.setText(device.getState());
     }
 

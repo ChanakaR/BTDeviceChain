@@ -13,18 +13,18 @@ public class DeviceAccess {
     List<Device> deviceList = new ArrayList<>();
 
     public DeviceAccess(){
-        prepareDummyData();
-    }
+//        prepareDummyData();
+   }
 
-    private void prepareDummyData(){
-        Device device = new Device("My Tablet","1234","false");
-        device.setState("running");
-        deviceList.add(device);
-
-        device = new Device("My Laptop","1234","false");
-        device.setState("running");
-        deviceList.add(device);
-    }
+//    private void prepareDummyData(){
+//        Device device = new Device("My Tablet","1234","false");
+//        device.setState("running");
+//        deviceList.add(device);
+//
+//        device = new Device("My Laptop","1234","false");
+//        device.setState("running");
+//        deviceList.add(device);
+//    }
 
     public List<Device> getDeviceList(){
         return this.deviceList;

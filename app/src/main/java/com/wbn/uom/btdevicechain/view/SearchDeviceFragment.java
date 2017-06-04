@@ -66,22 +66,25 @@ public class SearchDeviceFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 Device device = deviceList.get(position);
-                device.getAddress();
-                for (BluetoothDevice d : bluetoothDeviceList){
-                    if (d.getAddress().equals(device.getAddress())){
-                        Toast.makeText(getActivity().getApplicationContext(), device.getAddress() + " is selected!", Toast.LENGTH_SHORT).show();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            d.createBond();
-                        }else {
-                            try {
-                                Method method = d.getClass().getMethod("createBond", (Class[]) null);
-                                method.invoke(d, (Object[]) null);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
+                device.getMacAddress();
+                Toast.makeText(getActivity().getApplicationContext(), device.getMacAddress() + " is selected!", Toast.LENGTH_SHORT).show();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    try{
+                        device.getbDevice().createBond();
+                        ((MainActivity)getActivity()).deviceListChanged(device);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }else {
+                    try {
+                        Method method = device.getbDevice().getClass().getMethod("createBond", (Class[]) null);
+                        method.invoke(device.getbDevice(), (Object[]) null);
+                        ((MainActivity)getActivity()).deviceListChanged(device);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
+
             }
 
             @Override
@@ -107,10 +110,12 @@ public class SearchDeviceFragment extends Fragment {
     }
 
     public static void addDeviceToAdapter(BluetoothDevice device){
-        bluetoothDeviceList.add(device);
+//        bluetoothDeviceList.add(device);
         // Create a new device item
-        Device newDevice = new Device(device.getName(), device.getAddress(), "false");
+        Device newDevice = new Device(device);
         deviceListNotConnectedAdapter.add(newDevice);
         deviceListNotConnectedAdapter.notifyDataSetChanged();
     }
 }
+
+
