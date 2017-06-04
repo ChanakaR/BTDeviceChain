@@ -2,6 +2,7 @@ package com.wbn.uom.btdevicechain;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -40,6 +41,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        this.my_post = intent.getStringExtra("STATE");
 
         selectedBluetoothDevices = new ArrayList<>();
         deviceAddedFlag = false;
@@ -174,6 +178,10 @@ public class MainActivity extends AppCompatActivity
         this.deviceAddedFlag = false;
     }
 
+    public String getMyPost(){
+        return this.my_post;
+
+    }
 
 
 
