@@ -6,4 +6,7 @@
     <color name="floatingBtn">#FF6F00</color>
     <color name="sub_description">#999999</color>
     <color name="title">#222222</color>
+    <color name="device_disabled">#fff9c4</color>
+    <color name="device_activated">#DCEDC8</color>
+    <color name="device_dismissed">#FFCDD2</color>
 </resources>

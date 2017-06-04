@@ -7,11 +7,14 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,11 +36,12 @@ public class BluetoothCommunicationService {
     ProgressDialog progressDialog;
 
     private ConnectedThread connectedThread;
+    private List<ConnectedThread> connectedThreadPool = new ArrayList<>();
 
     public BluetoothCommunicationService(Context context){
         this.context = context;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        start();
+//        start();
     }
 
 
@@ -127,6 +131,8 @@ public class BluetoothCommunicationService {
             try {
                 mmSocket.connect();
                 Log.d(TAG,"Connected Thread connected success fully");
+                connected(mmSocket,mmDevice);
+
             } catch (IOException e) {
                 try {
                     mmSocket.close();
@@ -135,9 +141,14 @@ public class BluetoothCommunicationService {
                     Log.d(TAG,"run : Unable to close the socket" + e1.getMessage());
                 }
                 Log.d(TAG,"run : ConnectThread: could not connect to UUID :" + e.getMessage());
+                try {
+                    progressDialog.dismiss();
+                }catch (NullPointerException ne){
+                    Log.d(TAG,"no dialog box has started");
+                }
             }
 
-            connected(mmSocket,mmDevice);
+
         }
 
         public void cancel(){
@@ -155,6 +166,20 @@ public class BluetoothCommunicationService {
      * session in listening (server) mode. Called by the Activity onResume()
      */
     public synchronized void start() {
+        Log.d(TAG,"start");
+
+        if(connectThread != null){
+            connectThread.cancel();
+            connectThread = null;
+        }
+
+        if(mInsecureAcceptThread == null){
+            mInsecureAcceptThread = new AcceptThread();
+            mInsecureAcceptThread.start();
+        }
+    }
+
+    public synchronized void startListening() {
         Log.d(TAG,"start");
 
         if(connectThread != null){
@@ -254,8 +279,10 @@ public class BluetoothCommunicationService {
         Log.d(TAG,"Connected starting");
 
         // start the thread to manage the connections and perform transmission
-        connectedThread = new ConnectedThread(socket);
-        connectedThread.start();
+        ConnectedThread ct = new ConnectedThread(socket);
+//        connectedThread = new ConnectedThread(socket);
+        connectedThreadPool.add(ct);
+        ct.start();
     }
 
     public void write(byte[] bytes){

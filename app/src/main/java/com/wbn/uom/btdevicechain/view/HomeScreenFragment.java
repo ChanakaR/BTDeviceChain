@@ -56,7 +56,10 @@ public class HomeScreenFragment extends Fragment {
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
         deviceAccess = new DeviceAccess();
-
+        bluetoothCommunicationService = new BluetoothCommunicationService(getContext());
+        if(((MainActivity)getActivity()).getMyPost().equals("SLAVE")){
+            bluetoothCommunicationService.startListening();
+        }
     }
 
     public void startBTConnection(BluetoothDevice device, UUID uuid){
@@ -90,6 +93,10 @@ public class HomeScreenFragment extends Fragment {
             public void onClick(View view, int position) {
                 Device device = deviceList.get(position);
                 Toast.makeText(getActivity().getApplicationContext(), device.getDisplayName() + " is selected!", Toast.LENGTH_SHORT).show();
+                Log.d("DDD","AWAAAAAAAAAAAAAAAAA" + ((MainActivity)getActivity()).getMyPost());
+                if(((MainActivity)getActivity()).getMyPost().equals("MASTER")){
+                    startBTConnection(device.getbDevice(),MY_UUID_INSECURE);
+                }
             }
 
             @Override
@@ -113,7 +120,8 @@ public class HomeScreenFragment extends Fragment {
 
         startListening.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view1){
-                bluetoothCommunicationService = new BluetoothCommunicationService(getContext());
+//                bluetoothCommunicationService = new BluetoothCommunicationService(getContext());
+                bluetoothCommunicationService.startListening();
             }
         });
         // Inflate the layout for this fragment
