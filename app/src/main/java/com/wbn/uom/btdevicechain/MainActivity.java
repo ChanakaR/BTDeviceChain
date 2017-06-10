@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.wbn.uom.btdevicechain.btconnection.Bluetooth;
+import com.wbn.uom.btdevicechain.btconnection.BluetoothCommunicationService;
 import com.wbn.uom.btdevicechain.model.Device;
 import com.wbn.uom.btdevicechain.view.DeviceSelectScreenFragment;
 import com.wbn.uom.btdevicechain.view.HomeScreenFragment;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public Bluetooth bluetooth;
+    public BluetoothCommunicationService bluetoothCommunicationService;
     private String my_post = null;          // MASTER OR SLAVE
     private List<Device> selectedBluetoothDevices;
     private boolean deviceAddedFlag;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         this.my_post = intent.getStringExtra("STATE");
+        bluetoothCommunicationService = new BluetoothCommunicationService(this,this);
 
         selectedBluetoothDevices = new ArrayList<>();
         deviceAddedFlag = false;
@@ -75,10 +78,24 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Log.d("AAAAAA","METssssssssssssssssssssssssssssssssssssssHANATA ENAWAA");
+        Log.d("STATEEE",this.my_post);
+        if(this.my_post.equals("SLAVE")){
+            Log.d("EEEE","METHANATA ENAWAA");
+            bluetoothCommunicationService.startListening();
+        }
+
         //replace home screen by home screen fragment
+
+        if(this.my_post.equals("MASTER")){
+            startHomeFragment();
+        }
+
+    }
+
+    private void startHomeFragment(){
         Fragment homeFragment = new HomeScreenFragment();
         changeFragment(homeFragment);
-
     }
 
 
@@ -152,6 +169,12 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri){
         Toast toast = Toast.makeText(this, "Wheeee!",Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    public void displaySlaveHome(BluetoothDevice device){
+        Device my_master = new Device(device);
+        deviceListChanged(my_master);
+        startHomeFragment();
     }
 
     public void changeFragment(Fragment fragment){

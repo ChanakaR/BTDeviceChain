@@ -29,7 +29,7 @@ public class LogInActivity extends AppCompatActivity {
         buttonSlave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startMainActivity("VALUE");
+                startMainActivity("SLAVE");
             }
         });
     }

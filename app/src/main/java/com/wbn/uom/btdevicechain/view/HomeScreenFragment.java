@@ -37,7 +37,7 @@ public class HomeScreenFragment extends Fragment {
     private DeviceListSelectedAdapter deviceListSelectedAdapter;
     private DeviceAccess deviceAccess;
 
-    private BluetoothCommunicationService bluetoothCommunicationService;
+//    private BluetoothCommunicationService bluetoothCommunicationService;
 
     private static final UUID MY_UUID_INSECURE =
             UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
@@ -56,14 +56,14 @@ public class HomeScreenFragment extends Fragment {
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
         deviceAccess = new DeviceAccess();
-        bluetoothCommunicationService = new BluetoothCommunicationService(getContext());
-        if(((MainActivity)getActivity()).getMyPost().equals("SLAVE")){
-            bluetoothCommunicationService.startListening();
-        }
+////        bluetoothCommunicationService = new BluetoothCommunicationService(getContext(),getActivity());
+//        if(((MainActivity)getActivity()).getMyPost().equals("SLAVE")){
+//            bluetoothCommunicationService.startListening();
+//        }
     }
 
     public void startBTConnection(BluetoothDevice device, UUID uuid){
-        bluetoothCommunicationService.startClient(device,uuid);
+        ((MainActivity)getActivity()).bluetoothCommunicationService.startClient(device,uuid);
     }
 
     @Override
@@ -114,16 +114,19 @@ public class HomeScreenFragment extends Fragment {
         btnSend.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view1){
                 byte[] bytes = "Hi I am a client".getBytes(Charset.defaultCharset());
-                bluetoothCommunicationService.write(bytes);
+                ((MainActivity)getActivity()).bluetoothCommunicationService.write(bytes);
             }
         });
 
         startListening.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view1){
 //                bluetoothCommunicationService = new BluetoothCommunicationService(getContext());
-                bluetoothCommunicationService.startListening();
+                ((MainActivity)getActivity()).bluetoothCommunicationService.startListening();
             }
         });
+
+        updateScreen();
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -139,24 +142,19 @@ public class HomeScreenFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        Log.d("AWAAAA","MAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        updateScreen();
+    }
+
+    private void updateScreen(){
         if(((MainActivity)getActivity()).isDeviceAdded()){
-            Log.d("AWAAAA","ATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
             dataSetChanged();
         }
     }
 
     private void dataSetChanged(){
-        //prepareDataSet();
         deviceListSelectedAdapter.notifyDataSetChanged();
         ((MainActivity)getActivity()).resetDeviceAddedFlag();
     }
 
-    private void prepareDataSet(){
-        this.deviceList.clear();
-        if(((MainActivity)getActivity()).getSelectedDeviceList().size() > 0){
-            Log.d("AWAAAA","AWOOOOOOOOOOOOOOOOOOOOOOOOOOOOOoo");
-            deviceList = ((MainActivity)getActivity()).getSelectedDeviceList();
-        }
-    }
+
 }

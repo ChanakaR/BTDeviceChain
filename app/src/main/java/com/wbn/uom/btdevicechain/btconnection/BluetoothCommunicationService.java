@@ -1,13 +1,18 @@
 package com.wbn.uom.btdevicechain.btconnection;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.wbn.uom.btdevicechain.MainActivity;
+import com.wbn.uom.btdevicechain.model.Device;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +21,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Handler;
 
 /**
  * Created by inocer on 6/2/17.
@@ -35,11 +41,13 @@ public class BluetoothCommunicationService {
     private UUID deviceUUID;
     ProgressDialog progressDialog;
 
+    private MainActivity mainActivity;
     private ConnectedThread connectedThread;
     private List<ConnectedThread> connectedThreadPool = new ArrayList<>();
 
-    public BluetoothCommunicationService(Context context){
+    public BluetoothCommunicationService(Context context, Activity activity){
         this.context = context;
+        mainActivity = (MainActivity)activity;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 //        start();
     }
@@ -82,6 +90,9 @@ public class BluetoothCommunicationService {
 
             if(socket != null){
                 connected(socket,mmDevice);
+//                BluetoothDevice bd = socket.getRemoteDevice();
+//                Device connectedDevice = new Device(bd);
+//                mainActivity.deviceListChanged(connectedDevice);
             }
 
             Log.d(TAG,"End the accept thread");
@@ -188,6 +199,7 @@ public class BluetoothCommunicationService {
         }
 
         if(mInsecureAcceptThread == null){
+            progressDialog = ProgressDialog.show(context,"Waiting for a master","Please wait...",true);
             mInsecureAcceptThread = new AcceptThread();
             mInsecureAcceptThread.start();
         }
@@ -277,6 +289,10 @@ public class BluetoothCommunicationService {
 
     public void connected(BluetoothSocket socket, BluetoothDevice device){
         Log.d(TAG,"Connected starting");
+        if(mainActivity.getMyPost().equals("SLAVE")) {
+            Log.d("SSSS","ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
+            mainActivity.displaySlaveHome(socket.getRemoteDevice());
+        }
 
         // start the thread to manage the connections and perform transmission
         ConnectedThread ct = new ConnectedThread(socket);
