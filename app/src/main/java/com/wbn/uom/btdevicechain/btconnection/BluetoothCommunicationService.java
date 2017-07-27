@@ -14,11 +14,15 @@ import android.widget.Toast;
 import com.wbn.uom.btdevicechain.MainActivity;
 import com.wbn.uom.btdevicechain.model.Device;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Handler;
@@ -41,6 +45,7 @@ public class BluetoothCommunicationService {
     private UUID deviceUUID;
     ProgressDialog progressDialog;
 
+
     private MainActivity mainActivity;
     private ConnectedThread connectedThread;
     private List<ConnectedThread> connectedThreadPool = new ArrayList<>();
@@ -49,6 +54,7 @@ public class BluetoothCommunicationService {
         this.context = context;
         mainActivity = (MainActivity)activity;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
 //        start();
     }
 
@@ -223,6 +229,11 @@ public class BluetoothCommunicationService {
         private final BluetoothSocket mmSocket;
         private final InputStream inputStream;
         private final OutputStream outputStream;
+        private String SOCKET_STATE;          //STARTED,WROTE,LISTENED
+        private String MSG_TYPE;                    // REG, PING, UREG, REG_ACK,PING_ACK,UREG_ACK
+        private boolean notInterrupted = true;
+
+
 
         private ConnectedThread(BluetoothSocket socket){
             Log.d(TAG,"Connected thread is starting");
@@ -243,6 +254,7 @@ public class BluetoothCommunicationService {
                 e.printStackTrace();
             }
 
+            SOCKET_STATE = "STARTED";
             inputStream = tmpIn;
             outputStream = tmpOut;
         }
@@ -251,28 +263,158 @@ public class BluetoothCommunicationService {
             byte[] buffer = new byte[1024]; // buffer store for the stream
             int bytes;                      // bytes return from the read()
 
+            Calendar calendar = Calendar.getInstance();
+            int t1 = calendar.get(Calendar.SECOND);
             // keep listening to the inputStream until an exception occurs
             while(true){
-                // read from the input stream
-                try {
-                    bytes = inputStream.read(buffer);
-                    String inputMessage = new String(buffer,0,bytes);
-                    Log.d(TAG,"Input Stream : " + inputMessage);
-                } catch (IOException e) {
-                    Log.d(TAG,"Error while reading input"+e.getMessage());
+
+                if(notInterrupted){
+                    int t2 = calendar.get(Calendar.SECOND);
+                    if(mainActivity.getMyPost().equals("MASTER")){
+                        if(SOCKET_STATE.equals("STARTED")){
+                            Log.d(SOCKET_STATE,"REG is writing");
+                            String message = "{'TYPE':'REG','NAME':'"+mainActivity.getDisplayName()+"'}";
+                            write(message,true);
+                        }
+                        else if(SOCKET_STATE.equals("LISTENED")){
+                            if(MSG_TYPE.equals("REG_ACK") || MSG_TYPE.equals("PING_ACK")){
+                                Log.d(SOCKET_STATE,"REG_ACK or PING_ACK listened, PING is writing");
+                                String message = "PING";
+                                write(message,false);
+                            }
+
+                            if(MSG_TYPE.equals("UREG_ACK")){
+                                Device updatedDevice = new Device(mmSocket.getRemoteDevice());
+                                updatedDevice.setState("DISABLED");
+                                mainActivity.deviceListUpdate(updatedDevice);
+                                this.cancel();
+                                this.notInterrupted = false;
+                            }
+                        }
+                        else if(SOCKET_STATE.equals("WROTE") && (t2-t1) < 3){
+                            if(MSG_TYPE.equals("REG")){
+                                Log.d(SOCKET_STATE,"waiting for REG_ACK");
+                                String message_listen = "REG_ACK";
+                                listen(buffer,message_listen);
+                            }
+                            if(MSG_TYPE.equals("PING")){
+                                Log.d(SOCKET_STATE,"waiting for PING_ACK");
+                                String message_listen = "PING_ACK";
+                                listen(buffer, message_listen);
+                            }
+
+                            if(MSG_TYPE.equals("UREG")){
+                                String message_listen = "UREG_ACK";
+                                listen(buffer, message_listen);
+                            }
+                        }
+                        else if(SOCKET_STATE.equals("WROTE") && (t2-t1) > 3){
+                            // start buzzer
+                        }
+                    }
+                    else{
+                        if(SOCKET_STATE.equals("STARTED")){
+                            Log.d(SOCKET_STATE,"waiting for REG");
+                            String message_listen = "REG";
+                            listen(buffer,message_listen);
+                        }
+                        else if(SOCKET_STATE.equals("LISTENED")){
+                            if(MSG_TYPE.equals("REG")){
+                                Log.d(SOCKET_STATE,"REG listened and trying to write REG_ACK");
+                                String message = "{'TYPE':'REG_ACK','NAME':'"+mainActivity.getDisplayName()+"'}";
+                                write(message,true);
+                            }
+                            else if(MSG_TYPE.equals("PING")){
+                                Log.d(SOCKET_STATE,"PING listened and trying to write PING_ACK");
+                                String message = "PING_ACK";
+                                write(message,false);
+                            }
+                            else if(MSG_TYPE.equals("UREG")){
+                                String message = "UREG_ACK";
+                                write(message,false);
+                            }
+                        }
+                        else if(SOCKET_STATE.equals("WROTE") && (t2-t1) < 3){
+                            if(MSG_TYPE.equals("REG_ACK") || MSG_TYPE.equals("PING_ACK")){
+                                Log.d(SOCKET_STATE,"waiting for PING");
+                                Log.d("TIMEEEEE : ",Integer.toString(t2));
+                                String message_listen = "PING";
+                                listen(buffer,message_listen);
+                            }
+                            if(MSG_TYPE.equals("UREG_ACK")){
+                                Device updatedDevice = new Device(mmSocket.getRemoteDevice());
+                                updatedDevice.setState("DISABLED");
+                                mainActivity.deviceListUpdate(updatedDevice);
+                                this.cancel();
+                                this.notInterrupted = false;
+                            }
+                        }
+                        else if(SOCKET_STATE.equals("WROTE") && (t2-t1) > 3){
+                            // start buzzer
+                        }
+                    }
+                }else{
                     break;
                 }
             }
         }
 
+        private boolean listen(byte[] buffer,String listen){
+            try {
+                int bytes = inputStream.read(buffer);
+                String inputMessage = new String(buffer,0,bytes);
+                Log.d(TAG,"Input Stream : " + inputMessage);
+                if(inputMessage.contains(listen)){
+                    if(listen.equals("REG") || listen.equals("REG_ACK")){
+                        try {
+                            JSONObject json = new JSONObject(inputMessage);
+                            String displayName = (String) json.get("NAME");
+                            Device updatedDevice = new Device(mmSocket.getRemoteDevice());
+                            updatedDevice.setState("ACTIVE");
+                            updatedDevice.setDisplayName(displayName);
+                            mainActivity.deviceListUpdate(updatedDevice);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    MSG_TYPE = listen;
+                    SOCKET_STATE = "LISTENED";
+                }
+                return true;
+            } catch (IOException e) {
+                this.cancel();
+                mainActivity.showNotification();
+                this.notInterrupted=false;
+                Log.d(TAG,"Error while reading input"+e.getMessage());
+                return false;
+            }
+        }
+
         // call from mainActivity to send data
-        public void write(byte[] bytes){
+        public void write(String message, boolean isReg){
+            byte[] bytes = message.getBytes(Charset.defaultCharset());
             String text = new String(bytes, Charset.defaultCharset());
             Log.d(TAG,"Writting to output stream : " + text);
 
             try {
                 outputStream.write(bytes);
+                if(isReg){
+                    if(mainActivity.getMyPost().equals("MASTER")){
+                        MSG_TYPE = "REG";
+                    }
+                    else{
+                        MSG_TYPE = "REG_ACK";
+                    }
+                }
+                else{
+                    MSG_TYPE = message;
+                }
+                SOCKET_STATE = "WROTE";
             } catch (IOException e) {
+                this.cancel();
+                mainActivity.showNotification();
+                this.notInterrupted=false;
                 e.printStackTrace();
                 Log.d(TAG,"Error while writing to the output stream"+e.getMessage());
             }
@@ -288,23 +430,21 @@ public class BluetoothCommunicationService {
     }
 
     public void connected(BluetoothSocket socket, BluetoothDevice device){
-        Log.d(TAG,"Connected starting");
         if(mainActivity.getMyPost().equals("SLAVE")) {
-            Log.d("SSSS","ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
             mainActivity.displaySlaveHome(socket.getRemoteDevice());
         }
 
         // start the thread to manage the connections and perform transmission
         ConnectedThread ct = new ConnectedThread(socket);
-//        connectedThread = new ConnectedThread(socket);
         connectedThreadPool.add(ct);
+        ct.setName(socket.getRemoteDevice().getAddress());
         ct.start();
     }
 
-    public void write(byte[] bytes){
-
-        // synchronize a copy of the ConnectedThread
+    public void write(String message){
         Log.d(TAG,"write : write is called");
-        connectedThread.write(bytes);
+        connectedThread.write(message,false);
     }
+
+
 }

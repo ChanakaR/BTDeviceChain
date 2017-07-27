@@ -28,7 +28,9 @@ public class DeviceListSelectedAdapter extends RecyclerView.Adapter<DeviceListSe
             network_name = (TextView)itemView.findViewById(R.id.network_name_home);
             device_state = (TextView)itemView.findViewById(R.id.device_count_home);
         }
+
     }
+
 
     public DeviceListSelectedAdapter(List<Device> deviceList){
         this.deviceList = deviceList;
@@ -51,7 +53,19 @@ public class DeviceListSelectedAdapter extends RecyclerView.Adapter<DeviceListSe
 
     @Override
     public int getItemCount() {
-        return this.deviceList.size();
+        return deviceList.size();
+    }
+
+    public void addDevice(Device device){
+        this.deviceList.add(device);
+    }
+
+    public void updateDevice(int index, Device device){
+        List<Device> temp = deviceList;
+        temp.set(index,device);
+        deviceList.clear();
+        deviceList = temp;
+        notifyDataSetChanged();
     }
 
 }

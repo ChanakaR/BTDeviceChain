@@ -78,4 +78,13 @@ public class Bluetooth {
         bluetoothAdapter.cancelDiscovery();
     }
 
+    public void setDisplayName(String name){
+        this.bluetoothAdapter.setName(name);
+    }
+
+    public void startVisible(){
+        Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        ((Activity)context).startActivityForResult(getVisible, 0);
+    }
+
 }

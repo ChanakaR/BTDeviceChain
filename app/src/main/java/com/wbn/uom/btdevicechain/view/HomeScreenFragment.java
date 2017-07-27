@@ -19,8 +19,12 @@ import com.wbn.uom.btdevicechain.btconnection.BluetoothCommunicationService;
 import com.wbn.uom.btdevicechain.da.DeviceAccess;
 import com.wbn.uom.btdevicechain.model.Device;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,9 +49,6 @@ public class HomeScreenFragment extends Fragment {
     private BluetoothDevice selectedDevice;
     private static List<BluetoothDevice> bluetoothDeviceSelectedList = new ArrayList<>();
 
-    Button btnStartConnection;
-    Button btnSend;
-    Button startListening;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,10 +57,6 @@ public class HomeScreenFragment extends Fragment {
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
         deviceAccess = new DeviceAccess();
-////        bluetoothCommunicationService = new BluetoothCommunicationService(getContext(),getActivity());
-//        if(((MainActivity)getActivity()).getMyPost().equals("SLAVE")){
-//            bluetoothCommunicationService.startListening();
-//        }
     }
 
     public void startBTConnection(BluetoothDevice device, UUID uuid){
@@ -73,9 +70,6 @@ public class HomeScreenFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_screen, container, false);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.network_list_recycler_view);
-        btnStartConnection = (Button) view.findViewById(R.id.btnStartConnection);
-        btnSend = (Button)view.findViewById(R.id.btnSend);
-        startListening = (Button) view.findViewById(R.id.btnStartListnening);
 
         deviceList = ((MainActivity)getActivity()).getSelectedDeviceList();
         deviceListSelectedAdapter = new DeviceListSelectedAdapter(deviceList);
@@ -93,7 +87,6 @@ public class HomeScreenFragment extends Fragment {
             public void onClick(View view, int position) {
                 Device device = deviceList.get(position);
                 Toast.makeText(getActivity().getApplicationContext(), device.getDisplayName() + " is selected!", Toast.LENGTH_SHORT).show();
-                Log.d("DDD","AWAAAAAAAAAAAAAAAAA" + ((MainActivity)getActivity()).getMyPost());
                 if(((MainActivity)getActivity()).getMyPost().equals("MASTER")){
                     startBTConnection(device.getbDevice(),MY_UUID_INSECURE);
                 }
@@ -105,39 +98,12 @@ public class HomeScreenFragment extends Fragment {
             }
         }));
 
-        btnStartConnection.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view1){
-                startConnection();
-            }
-        });
-
-        btnSend.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view1){
-                byte[] bytes = "Hi I am a client".getBytes(Charset.defaultCharset());
-                ((MainActivity)getActivity()).bluetoothCommunicationService.write(bytes);
-            }
-        });
-
-        startListening.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view1){
-//                bluetoothCommunicationService = new BluetoothCommunicationService(getContext());
-                ((MainActivity)getActivity()).bluetoothCommunicationService.startListening();
-            }
-        });
-
         updateScreen();
 
         // Inflate the layout for this fragment
         return view;
     }
 
-    public void startConnection(){
-        startBTConnection(selectedDevice,MY_UUID_INSECURE);
-    }
-
-    public static void addDevice(BluetoothDevice device){
-        bluetoothDeviceSelectedList.add(device);
-    }
 
     @Override
     public void onResume(){
@@ -145,16 +111,22 @@ public class HomeScreenFragment extends Fragment {
         updateScreen();
     }
 
-    private void updateScreen(){
+    public void updateScreen(){
         if(((MainActivity)getActivity()).isDeviceAdded()){
             dataSetChanged();
         }
     }
 
-    private void dataSetChanged(){
+    public void updateExistingData(int index,Device device){
+        deviceListSelectedAdapter.updateDevice(index,device);
+    }
+
+    public void dataSetChanged(){
         deviceListSelectedAdapter.notifyDataSetChanged();
         ((MainActivity)getActivity()).resetDeviceAddedFlag();
     }
+
+
 
 
 }

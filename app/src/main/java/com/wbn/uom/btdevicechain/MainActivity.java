@@ -1,14 +1,22 @@
 package com.wbn.uom.btdevicechain;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -29,6 +37,7 @@ import com.wbn.uom.btdevicechain.view.HomeScreenFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     public Bluetooth bluetooth;
     public BluetoothCommunicationService bluetoothCommunicationService;
     private String my_post = null;          // MASTER OR SLAVE
+    private String my_name = null;
     private List<Device> selectedBluetoothDevices;
     private boolean deviceAddedFlag;
 
@@ -45,14 +55,19 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        this.my_post = intent.getStringExtra("STATE");
-        bluetoothCommunicationService = new BluetoothCommunicationService(this,this);
+        Bundle extras = intent.getExtras();
+        this.my_post = extras.getString("STATE");
+        this.my_name = extras.getString("NAME");
+
 
         selectedBluetoothDevices = new ArrayList<>();
         deviceAddedFlag = false;
         bluetooth = new Bluetooth(this);
         bluetooth.checkBluetoothAdapter();
         bluetooth.enableBluetooth();
+        bluetooth.setDisplayName(my_name);
+
+        bluetoothCommunicationService = new BluetoothCommunicationService(this,this);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -81,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         Log.d("AAAAAA","METssssssssssssssssssssssssssssssssssssssHANATA ENAWAA");
         Log.d("STATEEE",this.my_post);
         if(this.my_post.equals("SLAVE")){
-            Log.d("EEEE","METHANATA ENAWAA");
+            bluetooth.startVisible();
             bluetoothCommunicationService.startListening();
         }
 
@@ -147,17 +162,9 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_settings) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_stop) {
 
         }
 
@@ -203,9 +210,55 @@ public class MainActivity extends AppCompatActivity
 
     public String getMyPost(){
         return this.my_post;
+    }
+
+    public void deviceListUpdate(Device device){
+
+        for(int i=0;i<selectedBluetoothDevices.size();i++){
+            if(selectedBluetoothDevices.get(i).getMacAddress().equals(device.getMacAddress())){
+                Log.d("FIND DEVICE : ", "RELEVANT DEVICE FOUND");
+                selectedBluetoothDevices.set(i,device);
+                updateFragmentScreen();
+            }
+        }
+    }
+
+    private void updateFragmentScreen(){
+        try {
+            Log.d("UPDATE FRONT : ", "going to update front");
+            HomeScreenFragment f = (HomeScreenFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.home_screen_fragment);
+            f.dataSetChanged();
+        }
+        catch (Exception ex){
+
+        }
+    }
+
+    public void showNotification() {
+
+//        Thread t = getThreadByName(name);
+//        if(t!=null){
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.ic_error)
+                            .setContentTitle("Device is missing")
+                            .setContentText("Bluetooth device chain")
+                            .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+                            .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(001, mBuilder.build());
+
+//            t.stop();
+//            t.destroy();
+//        }
 
     }
 
-
+    public String getDisplayName(){
+        return this.my_name;
+    }
 
 }
