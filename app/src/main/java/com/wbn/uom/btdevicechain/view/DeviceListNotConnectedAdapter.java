@@ -13,6 +13,8 @@ import java.util.List;
 
 /**
  * Created by inocer on 5/28/17.
+ * Purpose : Adapter class for RecyclerView in DeviceSelectFragment Screen,
+ *           to show not connected devices
  */
 
 public class DeviceListNotConnectedAdapter extends RecyclerView.Adapter<DeviceListNotConnectedAdapter.DeviceListViewHolder> {

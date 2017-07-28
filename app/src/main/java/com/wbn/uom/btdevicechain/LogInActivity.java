@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/*
+ * purpose : Activity class to show first page
+ */
 public class LogInActivity extends AppCompatActivity {
 
     private Button buttonMaster;

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by   : chanaka on 4/19/17.
  * Class name   : DeviceListSelectedAdapter
- * Purpose      : Adapter class for network list view in home screen
+ * Purpose      : Adapter class for Device List RecyclerView view in home screen
  */
 
 public class DeviceListSelectedAdapter extends RecyclerView.Adapter<DeviceListSelectedAdapter.DeviceListViewHolder> {

@@ -16,6 +16,8 @@ import java.util.Set;
 
 /**
  * Created by inocer on 5/29/17.
+ * Purpose ; Handle bluetooth basic functionalities (eg: enable, getDefaultAdapter, etc)
+ *
  */
 
 public class Bluetooth {
@@ -31,8 +33,15 @@ public class Bluetooth {
         this.context = context;
     }
 
+    /*
+     * return the Default bluetooth adapter
+     */
     public BluetoothAdapter getBluetoothAdapter(){ return this.bluetoothAdapter; }
 
+    /*
+     *  Check whether the device support Bluetooth
+     *  if Device does not have an adapter application will exit showing a message
+     */
     public void checkBluetoothAdapter(){
         if (bluetoothAdapter == null) {
             new AlertDialog.Builder((Activity)context)
@@ -48,6 +57,9 @@ public class Bluetooth {
         }
     }
 
+    /*
+     * enable bluetooth
+     */
     public void enableBluetooth(){
         if(!bluetoothAdapter.isEnabled()){
             Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -55,6 +67,10 @@ public class Bluetooth {
         }
     }
 
+
+    /*
+     * get list of paired devices
+     */
     public List<Device> getPairedDevices(){
         List<Device> pairedDeviceList = new ArrayList<>();
         Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
@@ -67,21 +83,35 @@ public class Bluetooth {
         return pairedDeviceList;
     }
 
+
+    /*
+     * Start device discovery process
+     */
     public void startDeviceDiscovery(){
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         context.registerReceiver(broadcardReciever, filter);
         bluetoothAdapter.startDiscovery();
     }
 
+    /*
+     * cancel device discovery
+     */
     public void cancelDeviceDiscovery(){
         context.unregisterReceiver(broadcardReciever);
         bluetoothAdapter.cancelDiscovery();
     }
 
+    /*
+     * Set Display name
+     */
     public void setDisplayName(String name){
         this.bluetoothAdapter.setName(name);
     }
 
+
+    /*
+     * Enable the visibility of device to the other bluetooth devices
+     */
     public void startVisible(){
         Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         ((Activity)context).startActivityForResult(getVisible, 0);

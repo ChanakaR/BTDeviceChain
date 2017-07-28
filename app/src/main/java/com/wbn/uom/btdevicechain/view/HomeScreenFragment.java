@@ -15,8 +15,6 @@ import android.widget.Toast;
 
 import com.wbn.uom.btdevicechain.MainActivity;
 import com.wbn.uom.btdevicechain.R;
-import com.wbn.uom.btdevicechain.btconnection.BluetoothCommunicationService;
-import com.wbn.uom.btdevicechain.da.DeviceAccess;
 import com.wbn.uom.btdevicechain.model.Device;
 
 import org.json.JSONException;
@@ -39,9 +37,7 @@ public class HomeScreenFragment extends Fragment {
     private List<Device> deviceList = new ArrayList<>();
     private RecyclerView recyclerView;
     private DeviceListSelectedAdapter deviceListSelectedAdapter;
-    private DeviceAccess deviceAccess;
 
-//    private BluetoothCommunicationService bluetoothCommunicationService;
 
     private static final UUID MY_UUID_INSECURE =
             UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
@@ -54,9 +50,6 @@ public class HomeScreenFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
-        deviceAccess = new DeviceAccess();
     }
 
     public void startBTConnection(BluetoothDevice device, UUID uuid){

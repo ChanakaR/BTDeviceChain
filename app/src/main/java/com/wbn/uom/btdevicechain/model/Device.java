@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import java.util.List;
 
 /**
- * Created by chanaka on 4/16/17.
+ * Created by inocer on 4/16/17.
  * Class name   : Device
  * Purpose      : Class for represent a device. Contain device information
  */

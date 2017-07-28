@@ -12,6 +12,7 @@ import com.wbn.uom.btdevicechain.view.SearchDeviceFragment;
 
 /**
  * Created by inocer on 5/29/17.
+ *  Purpose : BroadcastReceiver class to catch near by bluetooth devices
  */
 
 public class DiscoveryBroadcastReceiver extends BroadcastReceiver{

@@ -31,6 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/*
+ * Purpose : Fragment class for Search Device Screen
+ */
+
 public class SearchDeviceFragment extends Fragment {
 
     private RecyclerView recyclerView;

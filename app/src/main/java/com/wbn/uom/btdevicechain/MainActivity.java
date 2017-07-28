@@ -39,6 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+/*
+ * Purpose : MainActivity class
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -77,8 +80,6 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 Fragment deviceSearchFragment = new DeviceSelectScreenFragment();
                 changeFragment(deviceSearchFragment);
             }
@@ -93,8 +94,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Log.d("AAAAAA","METssssssssssssssssssssssssssssssssssssssHANATA ENAWAA");
-        Log.d("STATEEE",this.my_post);
         if(this.my_post.equals("SLAVE")){
             bluetooth.startVisible();
             bluetoothCommunicationService.startListening();
@@ -237,8 +236,6 @@ public class MainActivity extends AppCompatActivity
 
     public void showNotification() {
 
-//        Thread t = getThreadByName(name);
-//        if(t!=null){
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this)
                             .setSmallIcon(R.drawable.ic_error)
@@ -251,9 +248,6 @@ public class MainActivity extends AppCompatActivity
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(001, mBuilder.build());
 
-//            t.stop();
-//            t.destroy();
-//        }
 
     }
 

@@ -29,6 +29,7 @@ import java.util.logging.Handler;
 
 /**
  * Created by inocer on 6/2/17.
+ *  Purpose : Controlling the communication among bluetooth devices
  */
 
 public class BluetoothCommunicationService {
@@ -54,8 +55,6 @@ public class BluetoothCommunicationService {
         this.context = context;
         mainActivity = (MainActivity)activity;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-//        start();
     }
 
 
@@ -96,9 +95,6 @@ public class BluetoothCommunicationService {
 
             if(socket != null){
                 connected(socket,mmDevice);
-//                BluetoothDevice bd = socket.getRemoteDevice();
-//                Device connectedDevice = new Device(bd);
-//                mainActivity.deviceListChanged(connectedDevice);
             }
 
             Log.d(TAG,"End the accept thread");
@@ -229,7 +225,7 @@ public class BluetoothCommunicationService {
         private final BluetoothSocket mmSocket;
         private final InputStream inputStream;
         private final OutputStream outputStream;
-        private String SOCKET_STATE;          //STARTED,WROTE,LISTENED
+        private String SOCKET_STATE;                //STARTED,WROTE,LISTENED
         private String MSG_TYPE;                    // REG, PING, UREG, REG_ACK,PING_ACK,UREG_ACK
         private boolean notInterrupted = true;
 
